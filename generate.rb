@@ -41,6 +41,11 @@ cards = list.cards.sort!{|a, b| a.pos <=> b.pos }
 
 # Start rendering
 
+def parse_title(title)
+  match = title.match(/^\s*(\((\d+)\))?\s*(\[(.*?)\])?\s*(.*)/)
+  [match[2], match[4], match[5]]
+end
+
 pdf = Prawn::Document.new :page_size => 'A4', :page_layout => :landscape
 
 pdf.font_families.update("FontAwesome" => {:normal => "#{File.dirname(__FILE__)}/resources/fontawesome-webfont.ttf"})
@@ -53,13 +58,42 @@ cards.each_with_index do |card, i|
     next unless card.name =~ Regexp.new(args[:"filter-title"])
   end
 
-  puts "- #{card.name}"
+  points,client,title = parse_title(card.name)
 
-  pdf.text(card.name, {
-    :size => 45,
-    :style => :bold,
-    :overflow => :expand
-  })
+  puts "- #{points} :: #{client} :: #{title}"
+
+  box_width = 100
+
+  if points
+    pdf.canvas do
+      pdf.bounding_box([pdf.bounds.absolute_right - box_width, pdf.bounds.absolute_top], :width => box_width) do
+        pdf.move_down 20
+        pdf.text(points.to_s, {
+          :align => :center,
+          :size => 60,
+          :style => :bold
+        })
+
+        pdf.stroke_color "000000"
+        pdf.stroke_bounds
+      end
+    end
+  end
+
+  pdf.move_cursor_to pdf.bounds.top
+
+  pdf.bounding_box([0, pdf.cursor], :width => pdf.bounds.width - box_width) do
+    pdf.text(client, {
+      :size => 20,
+      :overflow => :expand  
+    })
+
+    pdf.text(title, {
+      :size => 45,
+      :style => :bold,
+      :overflow => :expand
+    })
+  end
 
   pdf.move_down 10
 
