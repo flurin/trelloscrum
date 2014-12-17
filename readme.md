@@ -30,6 +30,7 @@ Usage: generate.rb [options] outfile.pdf
         --only-estimated      Wether or not to output only estemates
         --config              Path to config, default is local directory/config.json
         --list                Listname to use
+        --filter-title        Regexp to filter on titles, only show's cards matching title
     -h, --help                Display this help message.
 ```
 

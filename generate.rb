@@ -18,6 +18,7 @@ args = Slop.parse!(:help => true) do
   on "only-estimated", "Wether or not to output only estemates"
   on "config=", "Path to config, default is local directory/config.json", :argument => :optional
   on "list=", "Listname to use", :argument => :optional
+  on "filter-title=", "Regexp to filter on titles, only show's cards matching title", :argument => :optional
 end
 
 config_path = args[:config] || "./config.json";
@@ -48,6 +49,9 @@ pdf.font "Helvetica", :size => 20
 cards.each_with_index do |card, i| 
 
   next if args[:"only-estimated"] && card.name =~ /^\(\d+/
+  if args[:"filter-title"]
+    next unless card.name =~ Regexp.new(args[:"filter-title"])
+  end
 
   puts "- #{card.name}"
 
