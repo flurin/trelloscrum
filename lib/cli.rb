@@ -24,7 +24,7 @@ module TrelloScrum
       generate_pdf(cards, outfile)
     end
 
-    desc "setup DEVELOPER_PUBLIC_KEY MEMBER_TOKEN [BOARD_ID]", "config trello"
+    desc "setup DEVELOPER_PUBLIC_KEY MEMBER_TOKEN [BOARD_ID] [LIST_NAME]", "config trello"
     long_desc <<-EOT
       Generate the appropriate keys for Trello:
 
@@ -39,11 +39,14 @@ module TrelloScrum
       \x5  2. Click "Allow"
       \x5  3. Save the member token
 
+      3. Run setup with the just generated tokens.
+
     EOT
-    def setup(developer_public_key, member_token, board_id=nil)
+    def setup(developer_public_key, member_token, board_id=nil, list_name=nil)
       self.config["developer_public_key"] = developer_public_key
       self.config["member_token"] = member_token
       self.config["board_id"] = board_id if board_id
+      self.config["list_name"] = list_name if list_name
 
       File.open(options.config, "w") do |f|
         f.write JSON.pretty_generate(self.config)
