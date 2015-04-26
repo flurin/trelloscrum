@@ -58,6 +58,9 @@ module TrelloScrum
         })
       end
 
+      # Output due date
+      render_due_date(card.due)
+
       self.doc.move_down 10
 
       if card.checklists.any?
@@ -130,6 +133,35 @@ module TrelloScrum
 
         table.draw
       end
+    end
+
+    def render_due_date(date)
+      return unless date
+
+      date_text = date.strftime("%-d %^B")
+
+      due_box_text = {
+        text: date_text,
+        color: "FF0000",
+        styles: [:bold],
+        style: :bold, # Hack to make it work for width measuring too...
+        size: self.options[:base_font_size] * 3
+      }
+
+      due_box_width = self.doc.width_of(due_box_text[:text], due_box_text)
+      due_box_height = self.doc.height_of_formatted([due_box_text], {})
+
+      due_box = Prawn::Text::Formatted::Box.new([due_box_text], {
+        at: [self.doc.bounds.right - due_box_width, self.doc.bounds.absolute_bottom],
+        width: due_box_width,
+        height: due_box_height,
+        disable_wrap_by_char: true,
+        align: :right,
+        overflow: :shrink_to_fit,
+        document: doc
+      })
+
+      due_box.render()
     end
 
     def render_points_box(points)
