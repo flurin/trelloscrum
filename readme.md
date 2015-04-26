@@ -4,11 +4,8 @@ Generates PDF's with (+/-) one page per card with title, body and checklists. Pr
 
 ## Getting started
 
-1. Create a `config.json`
-1. Generate a Trello developer key here: https://trello.com/c/jObnWvl1/25-generating-your-developer-key
-1. Generate a Trello member token for your user: https://trello.com/c/fD8ErOzA/26-getting-a-user-token-and-oauth-urls
-1. Configure the dev key and member token, and board_id (you can get the board id from the url in Trello) in config.json (see below for format)
-1. Run generate.rb! (see below for options)
+1. Create a `config.json` by running `trelloscrum setup`. For more information on how to set up everything run `trelloscrum help setup`
+1. Run
 
 ## Card format
 
@@ -26,13 +23,18 @@ Checklist
 ## Commandline options
 
 ```
-Usage: generate.rb [options] outfile.pdf
-        --only-estimated      Wether or not to output only estemates
-        --config              Path to config, default is local directory/config.json
-        --list                Listname to use
-        --filter-title        Regexp to filter on titles, only show's cards matching title
-    -h, --help                Display this help message.
+Commands:
+  trelloscrum help [COMMAND]                                      # Describe available commands or one specific command
+  trelloscrum pdf OUTFILE                                         # generate PDF for cards
+  trelloscrum setup DEVELOPER_PUBLIC_KEY MEMBER_TOKEN [BOARD_ID]  # config trello
+
+Options:
+      [--config=CONFIG]           # Path to config, default is local directory/config.json
+                                  # Default: ./config.json
+  v, [--verbose], [--no-verbose]  # Verbose output
 ```
+
+For more options run `trelloscrum help [COMMAND]`
 
 ## Config.json
 
