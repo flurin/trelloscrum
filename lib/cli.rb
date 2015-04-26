@@ -90,14 +90,14 @@ module TrelloScrum
       list_name = options.list || config["list_name"]
 
       if !list_name || list_name.empty?
-        puts "Please enter a lisname or configurate one (use --list)"
+        puts "Please enter a listname (using --list) or configure one using setup"
         exit(1)
       end
 
       board_id = options.board || config["board_id"]
 
       if !board_id || board_id.empty?
-        puts "Please enter a board_id or configurate one (use --board)"
+        puts "Please enter a board_id (using --board) or configure one using setup "
         exit(1)
       end
 
