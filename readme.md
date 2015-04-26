@@ -5,8 +5,10 @@ Generates PDF's with (+/-) one page per card with title, body and checklists. Pr
 ## Getting started
 
 1. Install the trelloscrum gem: `gem install trelloscrum`
-1. Create a `config.json` in the current directory by running `trelloscrum setup`. For more information on how to set up everything run `trelloscrum help setup`
-1. Run
+1. Create a `config.json` in the current directory by running `trelloscrum setup DEVELOPER_PUBLIC_KEY MEMBER_TOKEN BOARD_ID`. For more information on how to set up everything run `trelloscrum help setup`
+1. Run `trelloscrum pdf --list="List title" output.pdf` to output all cards that have storypoints.
+
+See commandline options below for more info.
 
 ## Card format
 
