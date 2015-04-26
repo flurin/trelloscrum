@@ -3,4 +3,4 @@
 
 require_relative '../lib/cli'
 
-Cli.start()
+TrelloScrum::Cli.start()

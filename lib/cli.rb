@@ -5,22 +5,17 @@ require 'prawn'
 require 'chronic'
 require 'trello'
 
-class Cli < Thor
-  class_option :"config", :default => "./config.json", :type => :string, :desc => "Path to config, default is local directory/config.json"
-  class_option :"verbose", :aliases => ["v"], :default => false, :type => :boolean, :desc => "Verbose output"
+module TrelloScrum
+  class Cli < Thor
+    class_option :"config", :default => "./config.json", :type => :string, :desc => "Path to config, default is local directory/config.json"
+    class_option :"verbose", :aliases => ["v"], :default => false, :type => :boolean, :desc => "Verbose output"
 
 
-  desc "pdf OUTFILE", "generate PDF for cards"
-  method_option :"only-estimated", :default => true, :type => :boolean, :desc => "Wether or not to output only estimates"
-  method_option :"list", :type => :string, :desc => "Listname to use"
-  method_option :"board", :type => :string, :desc => "Board id to use"
-  method_option :"filter-title", :type => :string, :desc => "Regexp to filter on titles, only show's cards matching title"
-
-  def pdf(outfile)
-    setup_trello
-    cards = get_cards
-    generate_pdf(cards, outfile)
-  end
+    desc "pdf OUTFILE", "generate PDF for cards"
+    method_option :"only-estimated", :default => true, :type => :boolean, :desc => "Wether or not to output only estimates"
+    method_option :"list", :type => :string, :desc => "Listname to use"
+    method_option :"board", :type => :string, :desc => "Board id to use"
+    method_option :"filter-title", :type => :string, :desc => "Regexp to filter on titles, only show's cards matching title"
 
   desc "setup DEVELOPER_PUBLIC_KEY MEMBER_TOKEN [BOARD_ID]", "config trello"
   long_desc <<-EOT
