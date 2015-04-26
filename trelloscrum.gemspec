@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
                 ["trelloscrum.gemspec", "Gemfile", "readme.md"]
   spec.require_path = "lib"
 
-  spec.executables = ["bin/trelloscrum"]
+  spec.executables = ["trelloscrum"]
 
   spec.required_ruby_version = '>= 1.9.3'
   spec.required_rubygems_version = ">= 1.3.6"
