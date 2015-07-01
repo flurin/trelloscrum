@@ -59,3 +59,5 @@ For more options run `trelloscrum help [COMMAND]`
   - http://opensource.org/licenses/mit-license.html
 - The Font Awesome font is licensed under the SIL OFL 1.1:
   - http://scripts.sil.org/OFL
+- The OpenSans font is licensed under the Aapche license 2.0
+  - https://raw.githubusercontent.com/flurin/trelloscrum/master/resources/Apache%20License.txt
