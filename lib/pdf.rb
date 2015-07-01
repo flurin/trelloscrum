@@ -15,7 +15,17 @@ module TrelloScrum
       @doc = Prawn::Document.new :page_size => page_size, :page_layout => :landscape
 
       self.doc.font_families.update("FontAwesome" => {:normal => "#{File.dirname(__FILE__)}/../resources/fontawesome-webfont.ttf"})
-      self.doc.font "Helvetica", :size => self.options[:base_font_size]
+
+      self.doc.font_families.update(
+        "OpenSans" => {
+          :normal => "#{File.dirname(__FILE__)}/../resources/OpenSans-Regular.ttf",
+          :bold => "#{File.dirname(__FILE__)}/../resources/OpenSans-Bold.ttf",
+          :bold_italic => "#{File.dirname(__FILE__)}/../resources/OpenSans-BoldItalic.ttf",
+          :italic => "#{File.dirname(__FILE__)}/../resources/OpenSans-Italic.ttf"
+        }
+      )
+
+      self.doc.font "OpenSans", :size => self.options[:base_font_size]
 
 
     end
