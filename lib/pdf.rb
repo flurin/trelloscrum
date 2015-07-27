@@ -31,6 +31,9 @@ module TrelloScrum
     end
 
     def render_cards(cards)
+      # Flatten the structure
+      cards = cards.map{|list| list[:cards]}.flatten
+
       cards.each_with_index do |card, i|
         render_card(card)
 

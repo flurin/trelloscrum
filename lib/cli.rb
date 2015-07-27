@@ -5,6 +5,7 @@ require 'chronic'
 require 'trello'
 require 'launchy'
 
+require_relative 'trello_interface'
 require_relative 'pdf'
 
 module TrelloScrum
@@ -18,11 +19,22 @@ module TrelloScrum
     method_option :"list", :type => :string, :desc => "Listname to use"
     method_option :"board", :type => :string, :desc => "Board id to use"
     method_option :"filter-title", :type => :string, :desc => "Regexp to filter on titles, only show's cards matching title"
-
     def pdf(outfile)
-      setup_trello
-      cards = get_cards
-      generate_pdf(cards, outfile)
+      trello = setup_trello
+
+      list_name = options.list || config["list_name"]
+
+      if !list_name || list_name.empty?
+        say "Please enter a listname (using --list) or configure one using setup"
+        exit(1)
+      end
+
+      lists_with_cards = trello.get_cards(list_name, options)
+
+      pdf = Pdf.new
+      pdf.render_cards(lists_with_cards)
+      pdf.save(outfile)
+    end
     end
 
     desc "setup DEVELOPER_PUBLIC_KEY MEMBER_TOKEN [BOARD_ID] [LIST_NAME]", "config trello"
@@ -74,18 +86,12 @@ module TrelloScrum
       end
     end
 
-    protected
-
-    def write_config!
-      File.open(options.config, "w") do |f|
-        f.write JSON.pretty_generate(self.config)
+    no_commands do
+      def log(msg)
+        say msg if options.verbose
       end
-      say "Config written to #{options.config}"
     end
-
-    def log(msg)
-      say msg if options.verbose
-    end
+    protected
 
     def setup_trello
       if !config["developer_public_key"] || config["developer_public_key"].empty?
@@ -98,10 +104,27 @@ module TrelloScrum
         exit(1)
       end
 
-      Trello.configure do |c|
-        c.developer_public_key = config["developer_public_key"]
-        c.member_token = config["member_token"]
+      board_id = options.board || config["board_id"]
+      if !board_id || board_id.empty?
+        say "Please enter a board_id (using --board) or configure one using setup "
+        exit(1)
       end
+
+      TrelloInterface.new(
+        board_id,
+        config["developer_public_key"],
+        config["member_token"],
+        {
+          cli: self
+        }
+      )
+    end
+
+    def write_config!
+      File.open(options.config, "w") do |f|
+        f.write JSON.pretty_generate(self.config)
+      end
+      say "Config written to #{options.config}"
     end
 
     def config
@@ -111,49 +134,6 @@ module TrelloScrum
         @config ||= {}
       end
     end
-
-    def get_cards
-      list_name = options.list || config["list_name"]
-
-      if !list_name || list_name.empty?
-        say "Please enter a listname (using --list) or configure one using setup"
-        exit(1)
-      end
-
-      board_id = options.board || config["board_id"]
-
-      if !board_id || board_id.empty?
-        say "Please enter a board_id (using --board) or configure one using setup "
-        exit(1)
-      end
-
-      log "Getting cards from list #{list_name} of board #{board_id}"
-
-      board = Trello::Board.find(board_id)
-
-      list = board.lists.find{|l| l.name == list_name }
-
-      log "Found list: #{list ? "yes" : "no"}"
-
-      cards = list.cards.sort!{|a, b| a.pos <=> b.pos }
-
-      log "List contains #{cards.size} cards"
-
-      cards.find_all do |card|
-        keep = true
-        keep = false if options[:"only-estimated"] && !(card.name =~ /^\(\d+/)
-        keep = false if options[:"filter-title"] && !(card.name =~ Regexp.new(options[:"filter-title"]))
-        keep
-      end
-    end
-
-    def generate_pdf(cards, output_path)
-      pdf = Pdf.new
-      pdf.render_cards(cards)
-      pdf.save(output_path)
-    end
-
-
 
   end
 end
