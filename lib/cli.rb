@@ -7,6 +7,7 @@ require 'launchy'
 
 require_relative 'trello_interface'
 require_relative 'pdf'
+require_relative 'spreadsheet'
 
 module TrelloScrum
   class Cli < Thor
@@ -35,6 +36,20 @@ module TrelloScrum
       pdf.render_cards(lists_with_cards)
       pdf.save(outfile)
     end
+
+    desc "excel OUTFILE", "generate Excel file for cards"
+    method_option :"only-estimated", :default => true, :type => :boolean, :desc => "Wether or not to output only estimates"
+    method_option :"list", :type => :string, :desc => "Listname to use (if not set it will take all lists)"
+    method_option :"include-archived-lists", :default => false, :type => :boolean, :desc => "Include archived lists"
+    method_option :"board", :type => :string, :desc => "Board id to use"
+    method_option :"filter-title", :type => :string, :desc => "Regexp to filter on titles, only show's cards matching title"
+    def excel(outfile)
+      trello = setup_trello
+      lists_with_cards = trello.get_cards(options.list || config["list_name"], options)
+
+      sheet = Spreadsheet.new
+      sheet.render_cards(lists_with_cards)
+      sheet.save(outfile)
     end
 
     desc "setup DEVELOPER_PUBLIC_KEY MEMBER_TOKEN [BOARD_ID] [LIST_NAME]", "config trello"
