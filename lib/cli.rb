@@ -84,17 +84,17 @@ module TrelloScrum
     end
 
     def log(msg)
-      puts msg if options.verbose
+      say msg if options.verbose
     end
 
     def setup_trello
       if !config["developer_public_key"] || config["developer_public_key"].empty?
-        puts "Please make sure you have configured a developer public key (run setup help for more info)"
+        say "Please make sure you have configured a developer public key (run setup help for more info)"
         exit(1)
       end
 
       if !config["member_token"] || config["member_token"].empty?
-        puts "Please make sure you have configured a member token (run setup help for more info)"
+        say "Please make sure you have configured a member token (run setup help for more info)"
         exit(1)
       end
 
@@ -116,14 +116,14 @@ module TrelloScrum
       list_name = options.list || config["list_name"]
 
       if !list_name || list_name.empty?
-        puts "Please enter a listname (using --list) or configure one using setup"
+        say "Please enter a listname (using --list) or configure one using setup"
         exit(1)
       end
 
       board_id = options.board || config["board_id"]
 
       if !board_id || board_id.empty?
-        puts "Please enter a board_id (using --board) or configure one using setup "
+        say "Please enter a board_id (using --board) or configure one using setup "
         exit(1)
       end
 
