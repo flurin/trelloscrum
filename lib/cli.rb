@@ -3,6 +3,7 @@ require 'thor'
 require 'json'
 require 'chronic'
 require 'trello'
+require 'launchy'
 
 require_relative 'pdf'
 
@@ -48,14 +49,39 @@ module TrelloScrum
       self.config["board_id"] = board_id if board_id
       self.config["list_name"] = list_name if list_name
 
-      File.open(options.config, "w") do |f|
-        f.write JSON.pretty_generate(self.config)
-      end
+      write_config!
+    end
 
-      puts "New config written to #{options.config}"
+    desc "authorize", "Re-authorize trello"
+    long_desc <<-EOT
+      A simple way to launch the browser with the correct url. It will
+      also provide you with a way to paste your MEMBER_TOKEN.
+    EOT
+    def authorize
+      # Open the browser
+      url = "https://trello.com/1/connect"
+      url << "?key=#{self.config["developer_public_key"]}"
+      url << "&name=TrelloScrumCard&response_type=token"
+      Launchy.open(url)
+
+      member_token = ask("Paste member token here:")
+
+      if member_token =~ /.+/
+        self.config["member_token"] = member_token
+        write_config!
+      else
+        say "No member token entered. Not saving new member token"
+      end
     end
 
     protected
+
+    def write_config!
+      File.open(options.config, "w") do |f|
+        f.write JSON.pretty_generate(self.config)
+      end
+      say "Config written to #{options.config}"
+    end
 
     def log(msg)
       puts msg if options.verbose

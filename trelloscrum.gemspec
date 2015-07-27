@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "chronic", "~> 0.10.2"
   spec.add_dependency "ruby-trello", "~> 1.1.2"
   spec.add_dependency "thor", "~> 0.19.1"
+  spec.add_dependency "launchy", "~> 2.4.3"
 
   spec.homepage = "https://github.com/flurin/trelloscrum"
   spec.description = <<END_DESC
